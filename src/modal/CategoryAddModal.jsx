@@ -9,7 +9,7 @@ const CategoryADDModal = ({ setIsModalOpen, sellerId, fetchCategories }) => {
   const [newCategory, setNewCategory] = useState("");
   const [image, setImage] = useState(null);
   const [thumbnail, setThumbnail] = useState("");
-
+  const [hide, setHide] = useState(false);
   const addCategoryMutation = useMutation({
     mutationFn: async (newCategoryData) => {
       const formData = new FormData();
@@ -25,10 +25,11 @@ const CategoryADDModal = ({ setIsModalOpen, sellerId, fetchCategories }) => {
     onSuccess: () => {
       fetchCategories();
       setIsModalOpen(false);
-
+      setHide(false);
       toast("Category added successfully");
     },
     onError: (error) => {
+      setHide(false);
       console.error("Error adding category:", error);
       toast("Error adding category");
     },
@@ -63,11 +64,13 @@ const CategoryADDModal = ({ setIsModalOpen, sellerId, fetchCategories }) => {
   };
 
   const handleAddCategory = (e) => {
+    setHide(true);
     e.preventDefault();
     if (!newCategory.trim() || !thumbnail || !sellerId?.id) {
       toast(
         "Please provide all required fields and ensure seller ID is available."
       );
+      setHide(false);
       return;
     }
     addCategoryMutation.mutate({ name: newCategory, image });
@@ -131,6 +134,7 @@ const CategoryADDModal = ({ setIsModalOpen, sellerId, fetchCategories }) => {
             <Button
               type="submit"
               className="bg-green-600 text-white py-2 px-6 rounded-lg hover:bg-green-700 transition"
+              disabled={hide ? true : false}
             >
               Submit
             </Button>

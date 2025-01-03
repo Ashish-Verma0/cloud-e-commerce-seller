@@ -10,7 +10,7 @@ const ManageProductModal = ({ setIsModalOpen }) => {
     const storedSellerId = localStorage.getItem("seller-id");
     return storedSellerId ? JSON.parse(storedSellerId) : null;
   }, []);
-
+  const [hide, setHide] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     price: "",
@@ -67,10 +67,12 @@ const ManageProductModal = ({ setIsModalOpen }) => {
       queryClient.invalidateQueries(["products", sellerId.shopName]);
       toast("Product Added Successfully");
       setIsModalOpen(false);
+      setHide(false);
     },
     onError: (error) => {
       console.error("Error updating product:", error);
       toast("Error updating product:");
+      setHide(false);
     },
   });
 
@@ -89,6 +91,7 @@ const ManageProductModal = ({ setIsModalOpen }) => {
   };
 
   const handleAddProduct = (e) => {
+    setHide(true);
     e.preventDefault();
     const formdata = new FormData();
 
@@ -250,7 +253,7 @@ const ManageProductModal = ({ setIsModalOpen }) => {
             <Button
               type="submit"
               className="bg-green-600 text-white py-2 px-6 rounded-lg hover:bg-green-700 transition"
-              disabled={mutation.isLoading}
+              disabled={hide ? true : false}
             >
               {mutation.isLoading ? "Loading..." : "Add Product"}
             </Button>

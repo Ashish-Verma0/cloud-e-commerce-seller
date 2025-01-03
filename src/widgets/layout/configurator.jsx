@@ -69,7 +69,7 @@ export function Configurator() {
         openConfigurator ? "translate-x-0" : "translate-x-96"
       }`}
     >
-      <div className="flex items-start justify-between px-6 pt-8 pb-6">
+      {/* <div className="flex items-start justify-between px-6 pt-8 pb-6">
         <div>
           <Typography variant="h5" color="blue-gray">
             Dashboard Configurator
@@ -85,7 +85,7 @@ export function Configurator() {
         >
           <XMarkIcon strokeWidth={2.5} className="h-5 w-5" />
         </IconButton>
-      </div>
+      </div> */}
       <div className="py-4 px-6">
         <div className="mb-12">
           <Typography variant="h6" color="blue-gray">
@@ -211,17 +211,11 @@ export function Configurator() {
             Thank you for sharing ❤️
           </Typography>
           <div className="mt-4 flex justify-center gap-2">
-            <Button
-              variant="gradient"
-              className="flex items-center gap-2"
-            >
+            <Button variant="gradient" className="flex items-center gap-2">
               <i className="fa-brands fa-twitter text-white" />
               Tweet
             </Button>
-            <Button
-              variant="gradient"
-              className="flex items-center gap-2"
-            >
+            <Button variant="gradient" className="flex items-center gap-2">
               <i className="fa-brands fa-facebook text-white" />
               Share
             </Button>

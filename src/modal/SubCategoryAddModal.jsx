@@ -10,7 +10,7 @@ const SubCategoryAddModal = ({ setIsModalOpen }) => {
     const storedSellerId = localStorage.getItem("seller-id");
     return storedSellerId ? JSON.parse(storedSellerId) : null;
   }, []);
-
+  const [hide, setHide] = useState(false);
   const [formdata, setFormData] = useState({
     subCategory: "",
     category: "",
@@ -63,14 +63,17 @@ const SubCategoryAddModal = ({ setIsModalOpen }) => {
       queryClient.invalidateQueries(["subcategory", sellerId?.shopName]);
       toast("Subcategory Created Successfully");
       setIsModalOpen(false);
+      setHide(false);
     },
     onError: (error) => {
       console.error("Error updating category:", error);
       toast("Error updating category:");
+      setHide(false);
     },
   });
 
   const handleAddSubCategory = async (e) => {
+    setHide(true);
     e.preventDefault();
     const formData = new FormData();
     formData.append("subcategoryName", formdata.subCategory);
@@ -82,6 +85,7 @@ const SubCategoryAddModal = ({ setIsModalOpen }) => {
     } catch (error) {
       console.error("Error during mutation:", error);
       toast("Error during mutation:");
+      setHide(false);
     }
   };
 
@@ -167,6 +171,7 @@ const SubCategoryAddModal = ({ setIsModalOpen }) => {
             <Button
               type="submit"
               className="bg-green-600 text-white py-2 px-6 rounded-lg hover:bg-green-700 transition"
+              disabled={hide ? true : false}
             >
               Submit
             </Button>

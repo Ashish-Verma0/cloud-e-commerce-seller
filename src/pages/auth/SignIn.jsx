@@ -6,6 +6,7 @@ import { localurl } from "../../../constant";
 import { toast } from "react-toastify";
 
 export function SignIn() {
+  const [hide, setHide] = useState(false);
   const [formData, setFormData] = useState({
     ownerEmail: "",
     ownerPassword: "",
@@ -24,6 +25,7 @@ export function SignIn() {
 
   const handleSubmit = useCallback(
     async (e) => {
+      setHide(true);
       e.preventDefault();
       setLoading(true);
       setError("");
@@ -37,18 +39,22 @@ export function SignIn() {
         localStorage.setItem("seller-id", JSON.stringify(response.user));
 
         if (response.success) {
+          setHide(false);
           toast("Seller Login successfully");
           setTimeout(() => {
             navigate("/dashboard/manage-products");
             window.location.reload();
           }, 2000);
         } else {
+          setHide(false);
           setError("Login failed. Please check your credentials.");
         }
       } catch (error) {
+        setHide(false);
         console.error("Login error:", error);
         setError("An error occurred. Please try again later.");
       } finally {
+        setHide(false);
         setLoading(false);
       }
     },
@@ -99,7 +105,7 @@ export function SignIn() {
           <Button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300"
-            disabled={loading}
+            disabled={hide ? true : false}
           >
             {loading ? "Logging in..." : "Login"}
           </Button>

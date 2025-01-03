@@ -9,7 +9,7 @@ const ManageProductBulkModal = ({ setIsBulkModalOpen }) => {
     const storedSellerId = localStorage.getItem("seller-id");
     return storedSellerId ? JSON.parse(storedSellerId) : null;
   }, []);
-
+  const [hide, setHide] = useState(false);
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async (formData) => {
@@ -29,10 +29,12 @@ const ManageProductBulkModal = ({ setIsBulkModalOpen }) => {
       queryClient.invalidateQueries(["products", sellerId?.shopName]);
       toast.success("Bulk Uploaded Successfully");
       setIsBulkModalOpen(false);
+      setHide(false);
     },
     onError: (error) => {
       console.error("Error on adding location:", error);
       toast.error(error.message || "Error on adding Bulk File");
+      setHide(false);
     },
   });
 
@@ -59,8 +61,10 @@ const ManageProductBulkModal = ({ setIsBulkModalOpen }) => {
   };
 
   const handleSubmit = () => {
+    setHide(true);
     if (!file) {
       toast.error("Please upload a file");
+      setHide(false);
       return;
     }
     const formData = new FormData();
@@ -125,6 +129,7 @@ const ManageProductBulkModal = ({ setIsBulkModalOpen }) => {
           <button
             onClick={handleSubmit}
             className="px-6 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700"
+            disabled={hide ? true : false}
           >
             Upload
           </button>

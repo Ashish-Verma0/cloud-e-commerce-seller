@@ -16,7 +16,7 @@ const ManageLocationModal = ({ setIsModalOpen }) => {
     const storedSellerId = localStorage.getItem("seller-id");
     return storedSellerId ? JSON.parse(storedSellerId) : null;
   }, []);
-
+  const [hide, setHde] = useState(false);
   const [formData, setFormData] = useState({
     state: "",
     city: "",
@@ -40,10 +40,12 @@ const ManageLocationModal = ({ setIsModalOpen }) => {
       // fetchCategories();
       toast("Location Created Successfully");
       setIsModalOpen(false);
+      setHde(false);
     },
     onError: (error) => {
       console.error("Error on adding location:", error);
       toast("Error on adding location:");
+      setHde(false);
     },
   });
 
@@ -53,10 +55,12 @@ const ManageLocationModal = ({ setIsModalOpen }) => {
   };
 
   const handleAddArea = async (e) => {
+    setHde(true);
     e.preventDefault();
     try {
       await mutation.mutateAsync(formData);
     } catch (error) {
+      setHde(false);
       console.error("Error during mutation:", error);
       toast("Error during mutation:");
     }
@@ -165,6 +169,7 @@ const ManageLocationModal = ({ setIsModalOpen }) => {
             <Button
               type="submit"
               className="bg-green-600 text-white py-2 px-6 rounded-lg hover:bg-green-700 transition"
+              disabled={hide ? true : false}
             >
               Add Area
             </Button>

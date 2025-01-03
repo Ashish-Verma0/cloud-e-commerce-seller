@@ -6,6 +6,7 @@ import { localurl } from "../../../constant";
 import { toast } from "react-toastify";
 
 export function SignUp() {
+  const [hide, setHide] = useState(false);
   const [formData, setFormData] = useState({
     ownerName: "",
     ownerEmail: "",
@@ -16,9 +17,8 @@ export function SignUp() {
     shopName: "",
     shopAddress: "",
     shopVerified: false,
-    image: null,
   });
-
+  const [image, setImage] = useState(null);
   const navigate = useNavigate();
 
   const handleInputChange = useCallback((e) => {
@@ -30,7 +30,7 @@ export function SignUp() {
     const file = e.target.files[0];
     if (file) {
       if (file.size <= 2 * 1024 * 1024) {
-        setFormData((prev) => ({ ...prev, image: file }));
+        setImage(file);
       } else {
         toast("File size exceeds the limit of 2MB.");
       }
@@ -38,32 +38,36 @@ export function SignUp() {
   }, []);
 
   const handleSubmit = async (e) => {
+    setHide(true);
     e.preventDefault();
 
     const formDataToSend = new FormData();
-    Object.entries(formData).forEach(([key, value]) => {
-      if (key !== "image") {
-        formDataToSend.append(key, value);
-      }
-    });
 
-    if (formData.image) {
-      formDataToSend.append("shopLogo", formData.image);
-    }
-
+    formDataToSend.append("ownerName", formData.ownerName);
+    formDataToSend.append("ownerAadhar", formData.ownerAadhar);
+    formDataToSend.append("ownerEmail", formData.ownerEmail);
+    formDataToSend.append("ownerPanCard", formData.ownerPanCard);
+    formDataToSend.append("ownerPassword", formData.ownerPassword);
+    formDataToSend.append("ownerPhone", formData.ownerPhone);
+    formDataToSend.append("shopAddress", formData.shopAddress);
+    formDataToSend.append("shopName", formData.shopName);
+    formDataToSend.append("shopVerified", formData.shopVerified);
+    formDataToSend.append("shopLogo", image);
     try {
       const response = await postFetch(
         `${localurl}/seller/create`,
         formDataToSend
       );
       if (response.status === 201) {
+        setHide(false);
         toast("Seller Created Successfully");
         setTimeout(() => {
           navigate("/");
         }, 2000);
       }
-      console.log("Signup response", response);
+      setHide(false);
     } catch (error) {
+      setHide(false);
       console.error("Error occurred while submitting form", error);
     }
   };
@@ -159,18 +163,19 @@ export function SignUp() {
                 </Typography>
               }
               containerProps={{ className: "-ml-2.5" }}
-              checked={formData.shopVerified} // Bind checkbox state to shopVerified
-              onChange={(e) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  shopVerified: e.target.checked,
-                }))
-              }
+              // checked={formData.shopVerified} // Bind checkbox state to shopVerified
+              // onChange={(e) =>
+              //   setFormData((prev) => ({
+              //     ...prev,
+              //     shopVerified: e.target.checked,
+              //   }))
+              // }
             />
             <Button
               type="submit"
               className="mt-6 w-full lg:w-1/2 mx-auto"
               fullWidth
+              disabled={hide ? true : false}
             >
               Sign Up
             </Button>

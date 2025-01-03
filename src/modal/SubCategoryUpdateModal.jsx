@@ -10,7 +10,7 @@ const SubCategoryUpdateModal = ({ setIsUpdateModalOpen, selectedProduct }) => {
     const storedSellerId = localStorage.getItem("seller-id");
     return storedSellerId ? JSON.parse(storedSellerId) : null;
   }, []);
-
+  const [hide, setHide] = useState(false);
   const [formdata, setFormData] = useState({
     category: selectedProduct?.category?.categoryName || "",
     subCategory: selectedProduct?.subcategoryName || "",
@@ -66,14 +66,17 @@ const SubCategoryUpdateModal = ({ setIsUpdateModalOpen, selectedProduct }) => {
       // fetchCategories();
       toast("Subcategory Updated Successfullly");
       setIsUpdateModalOpen(false);
+      setHide(false);
     },
     onError: (error) => {
       console.error("Error updating category:", error);
       toast("Error updating category:");
+      setHide(false);
     },
   });
 
   const handleUpdateSubcategory = async (e) => {
+    setHide(true);
     e.preventDefault();
     const formData = new FormData();
     formData.append("subcategoryName", formdata.subCategory);
@@ -85,6 +88,7 @@ const SubCategoryUpdateModal = ({ setIsUpdateModalOpen, selectedProduct }) => {
     } catch (error) {
       console.error("Error during mutation:", error);
       toast("Error during mutation:");
+      setHide(false);
     }
   };
 
@@ -177,6 +181,7 @@ const SubCategoryUpdateModal = ({ setIsUpdateModalOpen, selectedProduct }) => {
             <Button
               type="submit"
               className="bg-green-600 text-white py-2 px-6 rounded-lg hover:bg-green-700 transition"
+              disabled={hide ? true : false}
             >
               Submit
             </Button>

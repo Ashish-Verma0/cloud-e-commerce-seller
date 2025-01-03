@@ -14,6 +14,7 @@ const ProductModalUpdate = ({
   //   const storedSellerId = localStorage.getItem("seller-id");
   //   return storedSellerId ? JSON.parse(storedSellerId) : null;
   // }, []);
+  const [hide, setHide] = useState(false);
   const [formData, setFormData] = useState({
     title: productData.title || "",
     // category: productData.category?.categoryName || "",
@@ -78,10 +79,12 @@ const ProductModalUpdate = ({
       fetchProducts();
       toast("Product Updated Successfully");
       setIsEditModalOpen(false);
+      setHide(false);
     },
     onError: (error) => {
       console.error("Error updating product:", error);
       toast("Error updating product:");
+      setHide(false);
     },
   });
 
@@ -100,6 +103,7 @@ const ProductModalUpdate = ({
 
   // Handle form submission
   const handleUpdateProduct = (e) => {
+    setHide(true);
     e.preventDefault();
     const formdata = new FormData();
     if (image) {
@@ -284,7 +288,11 @@ const ProductModalUpdate = ({
             )}
 
             {/* Submit Button */}
-            <Button type="submit" disabled={mutation.isLoading}>
+            <Button
+              type="submit"
+              // disabled={mutation.isLoading}
+              disabled={hide ? true : false}
+            >
               {mutation.isLoading ? "Updating..." : "Update Product"}
             </Button>
           </form>

@@ -16,7 +16,7 @@ const LocationUpdateModal = ({ setIsUpdateModalOpen, selectedLocation }) => {
     const storedSellerId = localStorage.getItem("seller-id");
     return storedSellerId ? JSON.parse(storedSellerId) : null;
   }, []);
-
+  const [hide, setHide] = useState(false);
   const [formData, setFormData] = useState({
     state: selectedLocation?.state || "",
     city: selectedLocation?.city || "",
@@ -44,20 +44,24 @@ const LocationUpdateModal = ({ setIsUpdateModalOpen, selectedLocation }) => {
       queryClient.invalidateQueries(["locations", sellerId?.shopName]);
       setIsUpdateModalOpen(false);
       toast("Location Updated Successfully");
+      setHide(false);
     },
     onError: (error) => {
       console.error("Error updating category:", error);
       toast("Error updating category");
+      setHide(false);
     },
   });
 
   const handleUpdateArea = async (e) => {
+    setHide(true);
     e.preventDefault();
     try {
       await mutation.mutateAsync(formData);
     } catch (error) {
       console.error("Error during mutation:", error);
       toast("Error during mutation:");
+      setHide(false);
     }
   };
 
@@ -159,8 +163,9 @@ const LocationUpdateModal = ({ setIsUpdateModalOpen, selectedLocation }) => {
             <Button
               type="submit"
               className="bg-green-600 text-white py-2 px-6 rounded-lg hover:bg-green-700 transition"
+              disabled={hide ? true : false}
             >
-              Add Area
+              Update Area
             </Button>
           </form>
         </div>

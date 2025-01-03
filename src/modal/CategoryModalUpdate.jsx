@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 
 const CategoryModelUpdate = React.memo(
   ({ setIsUpdateModalOpen, selectedCategoryData, fetchCategories }) => {
+    const [hide, setHide] = useState(false);
     const [categoryName, setCategoryName] = useState(
       selectedCategoryData.categoryName || ""
     );
@@ -65,14 +66,17 @@ const CategoryModelUpdate = React.memo(
         toast("Category Updated Successfully");
         fetchCategories();
         setIsUpdateModalOpen(false);
+        setHide(false);
       },
       onError: (error) => {
         console.error("Error updating category:", error);
         toast("Error updating category");
+        setHide(false);
       },
     });
 
     const handleUpdateCategory = async (e) => {
+      setHide(true);
       e.preventDefault();
       const formData = new FormData();
       formData.append("categoryName", categoryName);
@@ -82,6 +86,7 @@ const CategoryModelUpdate = React.memo(
       try {
         await mutation.mutateAsync(formData);
       } catch (error) {
+        setHide(false);
         console.error("Error during mutation:", error);
         toast("Error during mutation:");
       }
@@ -155,6 +160,7 @@ const CategoryModelUpdate = React.memo(
             <Button
               type="submit"
               className="bg-blue-600 text-white py-2 px-6 rounded-lg hover:bg-blue-700"
+              disabled={hide ? true : false}
             >
               Update
             </Button>
